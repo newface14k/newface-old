@@ -548,7 +548,8 @@
         <div class="welcome-badge">📲 Cài app để dùng</div>
         <h2>NEWFACE TIMEMARK</h2>
         <p class="welcome-sub">
-          Chỉnh ngày giờ Timemark chuyên nghiệp.<br />Cài app và Nhập Key trên App!
+          Chỉnh ngày giờ Timemark chuyên nghiệp.<br />Cài app và Nhập Key trên
+          App!
         </p>
 
         <div class="pwa-already" id="pwa-already">
@@ -662,7 +663,8 @@
           🛒 Mua key Timemark
         </button>
         <div class="lock-note">
-          Vui lòng KHÔNG nhập key trên Web.<br />1 key = 1 thiết bị, Cài App ra màn hình chính hẵng nhập key.
+          Vui lòng KHÔNG nhập key trên Web.<br />1 key = 1 thiết bị, Cài App ra
+          màn hình chính hẵng nhập key.
         </div>
       </div>
     </div>
@@ -681,16 +683,6 @@
       <div class="key-bar" id="key-bar" style="display: none">
         <div class="key-dot" id="key-dot"></div>
         <span id="key-bar-text">Đang kiểm tra key...</span>
-        <span
-          style="
-            margin-left: auto;
-            cursor: pointer;
-            color: #e53e3e;
-            font-size: 11px;
-          "
-          onclick="logout()"
-          >Đăng xuất</span
-        >
       </div>
       <h1>📷PHOTO TIMEMARK📸</h1>
       <p
@@ -701,7 +693,8 @@
           margin-bottom: 20px;
         "
       >
-        Chỉnh Ngày Giờ Timemark, Người dùng tự chịu trách nhiệm cho hành vi của mình, Trân trọng!
+        Chỉnh Ngày Giờ Timemark, Người dùng tự chịu trách nhiệm cho hành vi của
+        mình, Trân trọng!
       </p>
       <div
         class="upload-area"
@@ -795,21 +788,8 @@
 
       function proceedToApp() {
         document.getElementById("welcome-overlay").style.display = "none";
-        // Nếu đã cài app, hiển thị thông báo thay vì bảng nhập key
-        if (isStandalone) {
-          showNotify(
-            "✅",
-            "App đã cài xong!",
-            "Vui lòng mở app từ màn hình chính để sử dụng đầy đủ tính năng và nhập key.",
-            [
-              {
-                label: "Đã hiểu",
-                primary: true,
-                action: closeNotify,
-              },
-            ],
-          );
-        } else if (localStorage.getItem("tm_active") === "1") {
+        // Sau welcome → check key
+        if (localStorage.getItem("tm_active") === "1") {
           startRealtimeCheck();
         } else {
           document.getElementById("lock-overlay").style.display = "flex";
@@ -1006,8 +986,7 @@
                   {
                     label: "🛒 Mua key",
                     primary: false,
-                    action: () =>
-                      window.open("https://zalo.me/", "_blank"),
+                    action: () => window.open("https://zalo.me/", "_blank"),
                   },
                 ],
               );
@@ -1132,7 +1111,7 @@
             },
             () => {
               document.getElementById("locationInput").value =
-                "Hà Nội, Việt Nam";
+                "Sơn Tây,Hà Nội";
             },
           );
         }
