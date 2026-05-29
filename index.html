@@ -1290,7 +1290,7 @@
         // wrap location text
         const words = locationStr.split(" ");
         let lines = [], currentLine = "";
-        ctx.font = `500 ${34 * scale}px RobotoCondensed`;
+        ctx.font = `500 ${44 * scale}px RobotoCondensed`;
         for (let word of words) {
           const t = currentLine ? currentLine + " " + word : word;
           if (ctx.measureText(t).width > maxWidth && currentLine) {
@@ -1305,13 +1305,13 @@
           adjustedY = bottomY - offset;
 
         // clockCenterY: trục giữa của block giờ, neo tất cả elements vào đây
-        const clockCenterY = adjustedY - 135 * scale + 31 * scale;
+        const clockCenterY = adjustedY - 145 * scale + 31 * scale;
 
         // --- Vẽ giờ dùng textBaseline="middle" để chính xác trên mọi thiết bị ---
         ctx.textBaseline = "middle";
         ctx.textAlign = "left";
         ctx.fillStyle = "#ffffff";
-        ctx.font = `500 ${115 * scale}px BigShouldersText`;
+        ctx.font = `500 ${140 * scale}px BigShouldersText`;
         ctx.shadowColor = "rgba(0,0,0,0.4)";
         ctx.shadowBlur = 8 * scale;
         ctx.shadowOffsetX = 3 * scale;
@@ -1319,7 +1319,7 @@
         ctx.strokeStyle = "rgba(0,0,0,0.20)";
         ctx.lineWidth = 5 * scale;
         ctx.lineJoin = "round";
-        const clockY = clockCenterY - (isIOSCanvas() ? 4 * scale : 0);
+        const clockY = clockCenterY - (isIOSCanvas() ? 6 * scale : 0);
         ctx.strokeText(timeStr, paddingX, clockY);
         ctx.fillText(timeStr, paddingX, clockY);
         ctx.shadowColor = "transparent";
@@ -1328,17 +1328,17 @@
         const timeW = ctx.measureText(timeStr).width;
         const sepX = paddingX + timeW + 24 * scale;
         ctx.strokeStyle = "#f5b800";
-        ctx.lineWidth = 4 * scale;
+        ctx.lineWidth = 5 * scale;
         ctx.lineCap = "round";
         ctx.beginPath();
-        ctx.moveTo(sepX, clockCenterY - 55 * scale);
-        ctx.lineTo(sepX, clockCenterY + 37 * scale);
+        ctx.moveTo(sepX, clockCenterY - 64 * scale);
+        ctx.lineTo(sepX, clockCenterY + 44 * scale);
         ctx.stroke();
 
         // --- Ngày / Thứ neo vào clockCenterY, không dùng mobileFix ---
         const dateX = sepX + 20 * scale;
         ctx.fillStyle = "#ffffff";
-        ctx.font = `500 ${34 * scale}px RobotoCondensed`;
+        ctx.font = `500 ${44 * scale}px RobotoCondensed`;
         ctx.textBaseline = "alphabetic";
         ctx.shadowColor = "rgba(0,0,0,0.4)";
         ctx.shadowBlur = 6 * scale;
@@ -1346,17 +1346,17 @@
         ctx.shadowOffsetY = 2 * scale;
         ctx.strokeStyle = "rgba(0,0,0,0.10)";
         ctx.lineWidth = 0.35 * scale;
-        const dateY = clockCenterY - 32 * scale;
+        const dateY = clockCenterY - 36 * scale;
         ctx.strokeText(dateStr, dateX, dateY);
         ctx.fillText(dateStr, dateX, dateY);
         ctx.fillStyle = "rgba(255,255,255,0.92)";
-        ctx.strokeText(dayStr, dateX, dateY + 68 * scale);
-        ctx.fillText(dayStr, dateX, dateY + 68 * scale);
+        ctx.strokeText(dayStr, dateX, dateY + 78 * scale);
+        ctx.fillText(dayStr, dateX, dateY + 78 * scale);
         ctx.shadowColor = "transparent";
 
         // --- Địa điểm ---
         ctx.fillStyle = "#ffffff";
-        ctx.font = `500 ${34 * scale}px RobotoCondensed`;
+        ctx.font = `500 ${44 * scale}px RobotoCondensed`;
         ctx.textBaseline = "alphabetic";
         ctx.shadowColor = "rgba(0,0,0,0.4)";
         ctx.shadowBlur = 6 * scale;
@@ -1364,7 +1364,7 @@
         ctx.shadowOffsetY = 2 * scale;
         ctx.strokeStyle = "rgba(0,0,0,0.18)";
         ctx.lineWidth = 0.5 * scale;
-        let locationY = adjustedY - -9 * scale;// Vị trí bắt đầu vẽ địa điểm, neo theo adjustedY đã tính toán để tránh bị tràn ra ngoài
+        let locationY = adjustedY - -20 * scale;// Vị trí bắt đầu vẽ địa điểm, neo theo adjustedY đã tính toán để tránh bị tràn ra ngoài
         for (let line of lines) {
           ctx.strokeText(line, paddingX, locationY);
           ctx.fillText(line, paddingX, locationY);
@@ -1372,8 +1372,8 @@
           ctx.shadowColor = "transparent";
         }
 
-        await drawLogoImage(scale, canvas.width - 360 * scale, canvas.height - 250 * scale, 350 * scale, 250 * scale);
-        await drawVerificationText(scale, true);
+       await drawLogoImage(scale, canvas.width - 400 * scale, canvas.height - 290 * scale, 380 * scale, 280 * scale);
+       await drawVerificationText(scale, true);
       }
 
       async function applyPortraitLayout(
@@ -1405,13 +1405,13 @@
           adjustedY = bottomY - offset;
 
         // clockCenterY: trục giữa của block giờ
-        const clockCenterY = adjustedY - 135 * scale + 31 * scale;
+        const clockCenterY = adjustedY - 145 * scale + 31 * scale;
 
         // --- Vẽ giờ dùng textBaseline="middle" ---
         ctx.textBaseline = "middle";
         ctx.textAlign = "left";
         ctx.fillStyle = "#ffffff";
-        ctx.font = `500 ${115 * scale}px BigShouldersText`;
+        ctx.font = `500 ${140 * scale}px BigShouldersText`;
         ctx.shadowColor = "rgba(0,0,0,0.4)";
         ctx.shadowBlur = 8 * scale;
         ctx.shadowOffsetX = 3 * scale;
@@ -1419,7 +1419,7 @@
         ctx.strokeStyle = "rgba(0,0,0,0.20)";
         ctx.lineWidth = 5 * scale;
         ctx.lineJoin = "round";
-        const clockY = clockCenterY - (isIOSCanvas() ? 4 * scale : 0);
+        const clockY = clockCenterY - (isIOSCanvas() ? 6 * scale : 0);
         ctx.strokeText(timeStr, paddingX, clockY);
         ctx.fillText(timeStr, paddingX, clockY);
         ctx.shadowColor = "transparent";
@@ -1428,17 +1428,17 @@
         const timeW = ctx.measureText(timeStr).width;
         const sepX = paddingX + timeW + 24 * scale;// Vị trí line tách giờ và ngày, căn theo clockCenterY
         ctx.strokeStyle = "#f5b800";
-        ctx.lineWidth = 4 * scale;// Dày hơn một chút để nổi bật trên nền tối
+        ctx.lineWidth = 5 * scale;// Dày hơn một chút để nổi bật trên nền tối
         ctx.lineCap = "round";
         ctx.beginPath();
-        ctx.moveTo(sepX, clockCenterY - 55 * scale);
-        ctx.lineTo(sepX, clockCenterY + 37 * scale);
+        ctx.moveTo(sepX, clockCenterY - 64 * scale);
+        ctx.lineTo(sepX, clockCenterY + 44 * scale);
         ctx.stroke();
 
         // --- Ngày / Thứ neo vào clockCenterY ---
         const dateX = sepX + 20 * scale;
         ctx.fillStyle = "#ffffff";
-        ctx.font = `500 ${34 * scale}px RobotoCondensed`;
+        ctx.font = `500 ${44 * scale}px RobotoCondensed`;
         ctx.textBaseline = "alphabetic";
         ctx.shadowColor = "rgba(0,0,0,0.4)";
         ctx.shadowBlur = 6 * scale;
@@ -1446,17 +1446,17 @@
         ctx.shadowOffsetY = 2 * scale;
         ctx.strokeStyle = "rgba(0,0,0,0.10)";
         ctx.lineWidth = 0.35 * scale;// Viền mỏng hơn để không làm rối mắt trên nền tối, vẫn đủ để tạo hiệu ứng đổ bóng
-        const dateY = clockCenterY - 32 * scale;// Vị trí ngày được neo theo clockCenterY, không cần mobileFix vì đã dùng textBaseline="middle"
+        const dateY = clockCenterY - 36 * scale;// Vị trí ngày được neo theo clockCenterY, không cần mobileFix vì đã dùng textBaseline="middle"
         ctx.strokeText(dateStr, dateX, dateY);
         ctx.fillText(dateStr, dateX, dateY);
         ctx.fillStyle = "rgba(255,255,255,0.92)";
-        ctx.strokeText(dayStr, dateX, dateY + 68 * scale); 
-        ctx.fillText(dayStr, dateX, dateY + 68 * scale);
+        ctx.strokeText(dayStr, dateX, dateY + 78 * scale); 
+        ctx.fillText(dayStr, dateX, dateY + 78 * scale);
         ctx.shadowColor = "transparent";
 
         // --- Địa điểm ---
         ctx.fillStyle = "#ffffff";
-        ctx.font = `500 ${34 * scale}px RobotoCondensed`;
+        ctx.font = `500 ${44 * scale}px RobotoCondensed`;
         ctx.textBaseline = "alphabetic";
         ctx.shadowColor = "rgba(0,0,0,0.4)";
         ctx.shadowBlur = 6 * scale;
@@ -1464,7 +1464,7 @@
         ctx.shadowOffsetY = 2 * scale;
         ctx.strokeStyle = "rgba(0,0,0,0.18)";
         ctx.lineWidth = 0.5 * scale;
-        let locationY = adjustedY - -9 * scale;
+        let locationY = adjustedY - -20 * scale;
         for (let line of lines) {
           ctx.strokeText(line, paddingX, locationY);
           ctx.fillText(line, paddingX, locationY);
@@ -1472,7 +1472,7 @@
           ctx.shadowColor = "transparent";
         }
 
-        await drawLogoImage(scale, canvas.width - 360 * scale, canvas.height - 250 * scale, 350 * scale, 250 * scale);
+        await drawLogoImage(scale, canvas.width - 400 * scale, canvas.height - 290 * scale, 380 * scale, 280 * scale);
         await drawVerificationText(scale, false);
       }
 
@@ -1519,11 +1519,11 @@
           checkmark.onload = res;
           checkmark.onerror = () => rej("Không thể tải checkmark.png");
         });
-        ctx.font = `${21 * scale}px RobotoCondensed`;
+        ctx.font = `${26 * scale}px RobotoCondensed`;
         const textWidth = ctx.measureText(verifiedText).width,
-          textHeight = 21 * scale;
-        const cw = 21 * scale,
-          ch = 21 * scale,
+          textHeight = 26 * scale;
+        const cw = 26 * scale,
+          ch = 26 * scale,
           totalW = cw + textWidth + 10 * scale,
           totalH = Math.max(ch, textHeight);
         const tmp = document.createElement("canvas");
@@ -1538,7 +1538,7 @@
           cw,
           ch,
         );
-        tc.font = `${21 * scale}px RobotoCondensed`;
+        tc.font = `${26 * scale}px RobotoCondensed`;
         tc.strokeStyle = "black";
         tc.lineWidth = 0.5 * scale;
         tc.strokeText(verifiedText, cw + 10 * scale, textHeight - 1 * scale);
