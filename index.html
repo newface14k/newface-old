@@ -1065,10 +1065,7 @@
             "url(assets/RobotoCondensed-Regular.ttf)",
           );
           const f3 = new FontFace("Roboto", "url(assets/Roboto-Regular.ttf)");
-          const f4 = new FontFace(
-            "RobotoMedium",
-            "url(assets/Roboto-Medium.ttf)",
-          );
+          const f4 = new FontFace("RobotoMedium", "url(assets/Roboto-Medium.ttf)");
           await Promise.all([f1.load(), f2.load(), f3.load(), f4.load()]).then(
             (fonts) => fonts.forEach((f) => document.fonts.add(f)),
           );
@@ -1351,23 +1348,7 @@
           ctx.fillText(line, paddingX - 23 * scale, locationY);
           locationY += lineHeight;
         }
-        const wmX = canvas.width - 145 * scale,
-          wmY = canvas.height - 65 * scale;
-        ctx.font = `${28 * scale}px RobotoMedium`;
-        ctx.fillStyle = "#ffc233";
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 0.1 * scale;
-        ctx.strokeText("Time", wmX, wmY);
-        ctx.fillText("Time", wmX, wmY);
-        ctx.fillStyle = "white";
-        ctx.strokeText("mark", wmX + 64 * scale, wmY);
-        ctx.fillText("mark", wmX + 64 * scale, wmY);
-        ctx.font = `${18 * scale}px Roboto`;
-        ctx.globalAlpha = 0.5;
-        ctx.lineWidth = 0.5 * scale;
-        ctx.strokeText("100% Chân thực", wmX, wmY + 35 * scale);
-        ctx.fillText("100% Chân thực", wmX, wmY + 35 * scale);
-        ctx.globalAlpha = 1;
+        await drawLogoImage(scale, canvas.width - 150 * scale, canvas.height - 90 * scale, 130 * scale, 70 * scale);
         await drawVerificationText(scale, true);
       }
 
@@ -1443,24 +1424,19 @@
           ctx.fillText(line, paddingX - 23 * scale, locationY);
           locationY += lineHeight;
         }
-        const wmX = canvas.width - 145 * scale,
-          wmY = canvas.height - 65 * scale;
-        ctx.font = `${28 * scale}px RobotoMedium`;
-        ctx.fillStyle = "#ffc233";
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 0.1 * scale;
-        ctx.strokeText("Time", wmX, wmY);
-        ctx.fillText("Time", wmX, wmY);
-        ctx.fillStyle = "white";
-        ctx.strokeText("mark", wmX + 64 * scale, wmY);
-        ctx.fillText("mark", wmX + 64 * scale, wmY);
-        ctx.font = `${18 * scale}px Roboto`;
-        ctx.globalAlpha = 0.8;
-        ctx.lineWidth = 0.5 * scale;
-        ctx.strokeText("100% Chân thực", wmX, wmY + 35 * scale);
-        ctx.fillText("100% Chân thực", wmX, wmY + 35 * scale);
-        ctx.globalAlpha = 1;
+        await drawLogoImage(scale, canvas.width - 150 * scale, canvas.height - 90 * scale, 130 * scale, 70 * scale);
         await drawVerificationText(scale, false);
+      }
+
+      async function drawLogoImage(scale, x, y, w, h) {
+        const logo = new Image();
+        logo.crossOrigin = "anonymous";
+        logo.src = "assets/logo.png";
+        await new Promise((res, rej) => {
+          logo.onload = res;
+          logo.onerror = () => rej("Không thể tải logo.png");
+        });
+        ctx.drawImage(logo, x, y, w, h);
       }
 
       async function drawVerificationText(scale, isLandscape) {
