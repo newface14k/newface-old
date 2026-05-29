@@ -1,0 +1,1548 @@
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NEWFACE</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="assets/icon.png" />
+    <meta name="theme-color" content="#764ba2" />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #000000 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        max-width: 400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 24px;
+      }
+      .upload-area {
+        border: 2px dashed #ddd;
+        border-radius: 10px;
+        padding: 40px 20px;
+        text-align: center;
+        margin-bottom: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .upload-area:hover {
+        border-color: #667eea;
+        background: #f8f9ff;
+      }
+      .upload-area.dragover {
+        border-color: #667eea;
+        background: #f0f2ff;
+      }
+      input[type="file"] {
+        display: none;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #555;
+      }
+      input[type="text"],
+      input[type="time"],
+      input[type="date"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+      }
+      input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+      .btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+      canvas {
+        max-width: 100%;
+        border-radius: 8px;
+        margin: 20px 0;
+        display: none;
+      }
+      .download-link {
+        display: none;
+        margin-top: 15px;
+        text-decoration: none;
+        text-align: center;
+      }
+      .progress {
+        width: 100%;
+        height: 6px;
+        background: #f0f0f0;
+        border-radius: 3px;
+        margin: 10px 0;
+        overflow: hidden;
+        display: none;
+      }
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+      .orientation-info {
+        background: #f8f9ff;
+        border: 1px solid #667eea;
+        border-radius: 8px;
+        padding: 10px;
+        margin: 10px 0;
+        text-align: center;
+        font-size: 14px;
+        color: #667eea;
+        display: none;
+      }
+
+      /* ===== WELCOME / INSTALL SCREEN ===== */
+      #welcome-overlay {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #000000 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        padding: 20px;
+      }
+      .welcome-box {
+        background: white;
+        border-radius: 20px;
+        padding: 32px 24px;
+        width: 100%;
+        max-width: 380px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        animation: slideUp 0.4s ease;
+      }
+      @keyframes slideUp {
+        from {
+          transform: translateY(40px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .welcome-logo {
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        margin: 0 auto 16px;
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+      }
+      .welcome-box h2 {
+        font-size: 22px;
+        font-weight: 800;
+        color: #1a1a2e;
+        margin-bottom: 6px;
+      }
+      .welcome-box .welcome-sub {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 24px;
+        line-height: 1.5;
+      }
+      .install-cards {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .install-card {
+        flex: 1;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 14px 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #fafafa;
+        position: relative;
+      }
+      .install-card:hover {
+        border-color: #667eea;
+        background: #f0f2ff;
+        transform: translateY(-2px);
+      }
+      .install-card.active {
+        border-color: #667eea;
+        background: #f0f2ff;
+      }
+      .install-card .ic-icon {
+        font-size: 28px;
+        margin-bottom: 6px;
+      }
+      .install-card .ic-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 2px;
+      }
+      .install-card .ic-sub {
+        font-size: 10px;
+        color: #888;
+        line-height: 1.4;
+      }
+      .install-steps {
+        background: #f8f9ff;
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin-bottom: 16px;
+        text-align: left;
+        display: none;
+        border: 1px solid #e0e4ff;
+      }
+      .install-steps.show {
+        display: block;
+      }
+      .install-steps .step-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #667eea;
+        margin-bottom: 8px;
+      }
+      .install-steps ol {
+        padding-left: 18px;
+      }
+      .install-steps li {
+        font-size: 12px;
+        color: #555;
+        margin-bottom: 4px;
+        line-height: 1.5;
+      }
+      .install-steps li b {
+        color: #333;
+      }
+      .btn-welcome-main {
+        width: 100%;
+        padding: 14px;
+        font-size: 15px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-bottom: 8px;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.35);
+      }
+      .btn-welcome-main:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.45);
+      }
+      .btn-welcome-skip {
+        width: 100%;
+        background: transparent;
+        color: #aaa;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-welcome-skip:hover {
+        border-color: #667eea;
+        color: #667eea;
+      }
+      .welcome-badge {
+        display: inline-block;
+        background: #fef3c7;
+        color: #d97706;
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 11px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        border: 1px solid #fde68a;
+      }
+      .pwa-already {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 16px;
+        font-size: 13px;
+        color: #166534;
+        display: none;
+      }
+
+      /* ===== LOCK OVERLAY ===== */
+      #lock-overlay {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(135deg, #000000 0%, #764ba2 100%);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        padding: 20px;
+      }
+      .lock-box {
+        background: white;
+        border-radius: 15px;
+        padding: 32px 28px;
+        width: 100%;
+        max-width: 380px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+      .lock-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+      .lock-box h2 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: #333;
+      }
+      .lock-box p {
+        font-size: 13px;
+        color: #888;
+        margin-bottom: 24px;
+        line-height: 1.5;
+      }
+      .key-input {
+        width: 100%;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 12px 14px;
+        color: #333;
+        font-size: 15px;
+        outline: none;
+        text-align: center;
+        letter-spacing: 2px;
+        margin-bottom: 12px;
+        transition: border-color 0.3s;
+      }
+      .key-input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+      .key-input::placeholder {
+        letter-spacing: 0;
+        color: #bbb;
+      }
+      .btn-activate {
+        width: 100%;
+        padding: 13px;
+        font-size: 15px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-bottom: 10px;
+      }
+      .btn-activate:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+      .btn-activate:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .btn-buy {
+        width: 100%;
+        background: transparent;
+        color: #888;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 11px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .btn-buy:hover {
+        border-color: #667eea;
+        color: #667eea;
+      }
+      .lock-note {
+        font-size: 11px;
+        color: #bbb;
+        margin-top: 14px;
+        line-height: 1.4;
+      }
+      .lock-error {
+        background: #fff0f0;
+        border: 1px solid #ffcccc;
+        color: #e53e3e;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 13px;
+        margin-bottom: 12px;
+        display: none;
+        line-height: 1.4;
+      }
+
+      /* ===== NOTIFY MODAL ===== */
+      #notify-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9998;
+        padding: 20px;
+      }
+      .notify-box {
+        background: white;
+        border-radius: 15px;
+        padding: 28px 24px;
+        width: 100%;
+        max-width: 360px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+      .notify-icon {
+        font-size: 40px;
+        margin-bottom: 12px;
+      }
+      .notify-box h3 {
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: #333;
+      }
+      .notify-box p {
+        font-size: 13px;
+        color: #888;
+        white-space: pre-line;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+      .notify-actions {
+        display: flex;
+        gap: 8px;
+        flex-direction: column;
+      }
+      .notify-btn-primary {
+        padding: 11px;
+        font-size: 14px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .notify-btn-secondary {
+        background: transparent;
+        color: #888;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .notify-btn-secondary:hover {
+        border-color: #667eea;
+        color: #667eea;
+      }
+
+      /* ===== KEY BAR ===== */
+      .key-bar {
+        background: #f8f9ff;
+        border-bottom: 1px solid #e0e4ff;
+        padding: 6px 16px;
+        font-size: 12px;
+        color: #667eea;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 8px 8px 0 0;
+        margin-bottom: 12px;
+      }
+      .key-bar.warning {
+        background: #fffbeb;
+        color: #d97706;
+        border-color: #fde68a;
+      }
+      .key-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #48bb78;
+        flex-shrink: 0;
+      }
+      .key-bar.warning .key-dot {
+        background: #f6ad55;
+      }
+
+      .confetti-piece {
+        position: fixed;
+        top: -10px;
+        font-size: 20px;
+        z-index: 99999;
+        animation: fall 4s linear forwards;
+        pointer-events: none;
+      }
+      @keyframes fall {
+        to {
+          transform: translateY(110vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ===== WELCOME / INSTALL SCREEN ===== -->
+    <div id="welcome-overlay">
+      <div class="welcome-box">
+        <div class="welcome-logo">📷</div>
+        <div class="welcome-badge">📲 Cài app để dùng</div>
+        <h2>NEWFACE TIMEMARK</h2>
+        <p class="welcome-sub">
+          Chỉnh ngày giờ Timemark chuyên nghiệp.<br />Cài app và Nhập Key trên App!
+        </p>
+
+        <div class="pwa-already" id="pwa-already">
+          ✅ Bạn đã cài app rồi! Nhấn <b>Tiếp tục</b> để vào ứng dụng.
+        </div>
+
+        <div class="install-cards" id="install-cards">
+          <div
+            class="install-card"
+            id="card-android"
+            onclick="selectPlatform('android')"
+          >
+            <div class="ic-icon">🤖</div>
+            <div class="ic-title">Android</div>
+            <div class="ic-sub">Chrome / Edge</div>
+          </div>
+          <div
+            class="install-card"
+            id="card-ios"
+            onclick="selectPlatform('ios')"
+          >
+            <div class="ic-icon">🍎</div>
+            <div class="ic-title">iPhone / iPad</div>
+            <div class="ic-sub">Safari</div>
+          </div>
+          <div class="install-card" id="card-pc" onclick="selectPlatform('pc')">
+            <div class="ic-icon">💻</div>
+            <div class="ic-title">Máy tính</div>
+            <div class="ic-sub">Chrome / Edge</div>
+          </div>
+        </div>
+
+        <div class="install-steps" id="steps-android">
+          <div class="step-title">📲 Cài trên Android (Chrome)</div>
+          <ol>
+            <li>Mở trang này bằng <b>Chrome</b></li>
+            <li>
+              Nhấn nút <b>"Cài ứng dụng"</b> bên dưới
+              <em>(hoặc menu ⋮ → Thêm vào màn hình chính)</em>
+            </li>
+            <li>Xác nhận <b>Cài đặt</b> → App xuất hiện trên màn hình chính</li>
+          </ol>
+        </div>
+        <div class="install-steps" id="steps-ios">
+          <div class="step-title">📱 Cài trên iPhone / iPad (Safari)</div>
+          <ol>
+            <li>Mở trang này bằng <b>Safari</b></li>
+            <li>Nhấn nút <b>Chia sẻ</b> <em>( )</em> ở thanh dưới</li>
+            <li>Chọn <b>"Thêm vào màn hình chính"</b></li>
+            <li>Nhấn <b>Thêm</b> → App xuất hiện trên Home Screen</li>
+          </ol>
+        </div>
+        <div class="install-steps" id="steps-pc">
+          <div class="step-title">💻 Cài trên máy tính (Chrome / Edge)</div>
+          <ol>
+            <li>Mở trang này bằng <b>Chrome</b> hoặc <b>Edge</b></li>
+            <li>
+              Nhấn biểu tượng <b>💾</b> trên thanh địa chỉ
+              <em>(hoặc menu ⋮ → Cài đặt ứng dụng)</em>
+            </li>
+            <li>Xác nhận <b>Cài đặt</b></li>
+          </ol>
+        </div>
+
+        <button
+          class="btn-welcome-main"
+          id="btn-install-pwa"
+          style="display: none"
+          onclick="triggerInstall()"
+        >
+          📲 Cài ứng dụng ngay
+        </button>
+        <button
+          class="btn-welcome-main"
+          id="btn-welcome-continue"
+          onclick="proceedToApp()"
+        >
+          Vui lòng KHÔNG nhập key trên Web →
+        </button>
+        <button class="btn-welcome-skip" onclick="proceedToApp()">
+          Bỏ qua, dùng trên trình duyệt
+        </button>
+      </div>
+    </div>
+
+    <!-- LOCK OVERLAY -->
+    <div id="lock-overlay">
+      <div class="lock-box">
+        <div class="lock-icon">🔐</div>
+        <h2>Kích hoạt Timemark</h2>
+        <p>
+          Nhập key để sử dụng đầy đủ tính năng.<br />Mỗi key chỉ dùng được trên
+          1 thiết bị.
+        </p>
+        <div class="lock-error" id="lock-error"></div>
+        <input
+          class="key-input"
+          id="key-input"
+          placeholder="Nhập key của bạn (VD: NEWFACE-XXXXXX)"
+          maxlength="24"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="btn-activate" id="btn-activate" onclick="activate()">
+          Kích hoạt
+        </button>
+        <button
+          class="btn-buy"
+          onclick="window.open('https://zalo.me/', '_blank')"
+        >
+          🛒 Mua key Timemark
+        </button>
+        <div class="lock-note">
+          Vui lòng KHÔNG nhập key trên Web.<br />1 key = 1 thiết bị, Cài App ra màn hình chính hẵng nhập key.
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFY MODAL -->
+    <div id="notify-modal">
+      <div class="notify-box">
+        <div class="notify-icon" id="notify-icon">ℹ️</div>
+        <h3 id="notify-title"></h3>
+        <p id="notify-msg"></p>
+        <div class="notify-actions" id="notify-actions"></div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="key-bar" id="key-bar" style="display: none">
+        <div class="key-dot" id="key-dot"></div>
+        <span id="key-bar-text">Đang kiểm tra key...</span>
+        <span
+          style="
+            margin-left: auto;
+            cursor: pointer;
+            color: #e53e3e;
+            font-size: 11px;
+          "
+          onclick="logout()"
+          >Đăng xuất</span
+        >
+      </div>
+      <h1>📷PHOTO TIMEMARK📸</h1>
+      <p
+        style="
+          text-align: center;
+          color: #667eea;
+          font-size: 18px;
+          margin-bottom: 20px;
+        "
+      >
+        Chỉnh Ngày Giờ Timemark, Người dùng tự chịu trách nhiệm cho hành vi của mình, Trân trọng!
+      </p>
+      <div
+        class="upload-area"
+        onclick="document.getElementById('imageInput').click()"
+      >
+        <p>📁 Chọn ảnh (tối đa 5 ảnh) hoặc Chụp ảnh.</p>
+        <input type="file" id="imageInput" accept="image/*" multiple />
+      </div>
+      <div id="previewList"></div>
+      <div id="orientationInfo" class="orientation-info">
+        <span id="orientationText"></span>
+      </div>
+      <div class="form-group">
+        <label for="dateInput">📅 Ngày:</label
+        ><input type="date" id="dateInput" />
+      </div>
+      <div class="form-group">
+        <label for="timeInput">🕐 Giờ:</label
+        ><input type="time" id="timeInput" />
+      </div>
+      <div class="form-group">
+        <label for="dayInput">📋 Thứ:</label
+        ><input type="text" id="dayInput" placeholder="VD: Thứ hai" />
+      </div>
+      <div class="form-group">
+        <label for="locationInput">📍 Vị trí:</label
+        ><input
+          type="text"
+          id="locationInput"
+          placeholder="VD: Hà Nội, Việt Nam"
+        />
+      </div>
+      <div class="progress"><div class="progress-bar"></div></div>
+      <button class="btn" id="processBtn" disabled>Tạo Watermark</button>
+      <button
+        class="btn"
+        id="downloadAllBtn"
+        style="display: none; margin-top: 10px"
+      >
+        📥 Tải tất cả
+      </button>
+      <canvas id="canvas"></canvas>
+      <a
+        id="downloadLink"
+        class="download-link btn"
+        download="watermarked_image.jpg"
+        >📥 Tải về</a
+      >
+    </div>
+
+    <script src="https://unpkg.com/pica@8.0.0/dist/pica.min.js"></script>
+    <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script>
+      // ===== WELCOME SCREEN =====
+      let deferredInstallPrompt = null;
+
+      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      const isStandalone =
+        window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true;
+
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        document.getElementById("btn-install-pwa").style.display = "block";
+      });
+
+      function selectPlatform(p) {
+        ["android", "ios", "pc"].forEach((id) => {
+          document.getElementById("card-" + id).classList.remove("active");
+          document.getElementById("steps-" + id).classList.remove("show");
+        });
+        document.getElementById("card-" + p).classList.add("active");
+        document.getElementById("steps-" + p).classList.add("show");
+        if (p === "android" && deferredInstallPrompt) {
+          document.getElementById("btn-install-pwa").style.display = "block";
+        }
+      }
+
+      async function triggerInstall() {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        const result = await deferredInstallPrompt.userChoice;
+        deferredInstallPrompt = null;
+        document.getElementById("btn-install-pwa").style.display = "none";
+        if (result.outcome === "accepted") {
+          setTimeout(() => proceedToApp(), 600);
+        }
+      }
+
+      function proceedToApp() {
+        document.getElementById("welcome-overlay").style.display = "none";
+        // Nếu đã cài app, hiển thị thông báo thay vì bảng nhập key
+        if (isStandalone) {
+          showNotify(
+            "✅",
+            "App đã cài xong!",
+            "Vui lòng mở app từ màn hình chính để sử dụng đầy đủ tính năng và nhập key.",
+            [
+              {
+                label: "Đã hiểu",
+                primary: true,
+                action: closeNotify,
+              },
+            ],
+          );
+        } else if (localStorage.getItem("tm_active") === "1") {
+          startRealtimeCheck();
+        } else {
+          document.getElementById("lock-overlay").style.display = "flex";
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Auto-detect platform
+        if (isStandalone) {
+          document.getElementById("pwa-already").style.display = "block";
+          document.getElementById("install-cards").style.display = "none";
+          document.getElementById("btn-welcome-continue").textContent =
+            "Vào ứng dụng →";
+        } else if (isIOS) {
+          selectPlatform("ios");
+        } else if (isAndroid) {
+          selectPlatform("android");
+        } else {
+          selectPlatform("pc");
+        }
+
+        document
+          .getElementById("key-input")
+          .addEventListener("keydown", (e) => {
+            if (e.key === "Enter") activate();
+          });
+      });
+      // ===== END WELCOME =====
+
+      // ===== KEY ACTIVATION =====
+      const API_URL =
+        "https://script.google.com/macros/s/AKfycbyY3xOpMGt-ffP1oq0EBsl6C9V_i5SYA-tDdcAeKiPVbTe8XodHDsL5nGb3fywzUGBfqg/exec";
+      let keyWatcher = null;
+
+      function getDevice() {
+        let d = localStorage.getItem("tm_device");
+        if (!d) {
+          d = ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+            (
+              c ^
+              (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+            ).toString(16),
+          );
+          localStorage.setItem("tm_device", d);
+        }
+        return d;
+      }
+
+      function showNotify(icon, title, msg, buttons) {
+        document.getElementById("notify-icon").textContent = icon;
+        document.getElementById("notify-title").textContent = title;
+        document.getElementById("notify-msg").textContent = msg;
+        const acts = document.getElementById("notify-actions");
+        acts.innerHTML = "";
+        (buttons || []).forEach((b) => {
+          const btn = document.createElement("button");
+          btn.className = b.primary
+            ? "notify-btn-primary"
+            : "notify-btn-secondary";
+          btn.textContent = b.label;
+          btn.onclick = b.action;
+          acts.appendChild(btn);
+        });
+        document.getElementById("notify-modal").style.display = "flex";
+      }
+      function closeNotify() {
+        document.getElementById("notify-modal").style.display = "none";
+      }
+
+      function startConfetti() {
+        for (let i = 0; i < 24; i++) {
+          const p = document.createElement("div");
+          p.className = "confetti-piece";
+          p.textContent = ["🎉", "✨", "🌟", "🎊"][i % 4];
+          p.style.left = Math.random() * 100 + "vw";
+          p.style.animationDelay = Math.random() * 1.5 + "s";
+          p.style.fontSize = 16 + Math.random() * 16 + "px";
+          document.body.appendChild(p);
+          setTimeout(() => p.remove(), 5000);
+        }
+      }
+      function updateKeyBar(data) {
+        const bar = document.getElementById("key-bar");
+        const txt = document.getElementById("key-bar-text");
+        if (!data || data.status !== "ok") {
+          bar.style.display = "none";
+          return;
+        }
+        bar.style.display = "flex";
+        const d = Number(data.daysLeft || 0);
+        bar.className = "key-bar" + (d <= 1 ? " warning" : "");
+        const savedKey = localStorage.getItem("tm_key") || "";
+        txt.textContent = `Key: ${savedKey} • HSD: ${data.expireDate || ""} • Còn ${d} ngày`;
+      }
+
+      function activate() {
+        const key = document
+          .getElementById("key-input")
+          .value.trim()
+          .toUpperCase();
+        const errEl = document.getElementById("lock-error");
+        const btn = document.getElementById("btn-activate");
+        errEl.style.display = "none";
+        if (!key) {
+          errEl.textContent = "⚠️ Vui lòng nhập key trước.";
+          errEl.style.display = "block";
+          return;
+        }
+        btn.disabled = true;
+        btn.textContent = "⏳ Đang kiểm tra...";
+        fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ key, device: getDevice() }),
+        })
+          .then((r) => r.json())
+          .then((d) => {
+            btn.disabled = false;
+            btn.textContent = "Kích hoạt";
+            if (d.status === "ok") {
+              localStorage.setItem("tm_active", "1");
+              localStorage.setItem("tm_key", key);
+              localStorage.removeItem("tm_notify_once");
+              document.getElementById("lock-overlay").style.display = "none";
+              updateKeyBar(d);
+              startConfetti();
+              startRealtimeCheck();
+              showNotify(
+                "🎉",
+                "Kích hoạt thành công!",
+                `Gói: ${d.level} (${d.type})\nKích hoạt: ${d.startDate}\nHết hạn: ${d.expireDate}\nCòn lại: ${d.daysLeft} ngày`,
+                [
+                  {
+                    label: "Bắt đầu sử dụng",
+                    primary: true,
+                    action: closeNotify,
+                  },
+                ],
+              );
+            } else {
+              errEl.textContent = "❌ " + (d.message || "Key không hợp lệ.");
+              errEl.style.display = "block";
+            }
+          })
+          .catch(() => {
+            btn.disabled = false;
+            btn.textContent = "Kích hoạt";
+            errEl.textContent =
+              "❌ Không kết nối được server. Vui lòng thử lại.";
+            errEl.style.display = "block";
+          });
+      }
+
+      function autoCheckKey() {
+        const savedKey = localStorage.getItem("tm_key");
+        if (!savedKey) {
+          updateKeyBar(null);
+          return;
+        }
+        fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ key: savedKey, device: getDevice() }),
+        })
+          .then((r) => r.json())
+          .then((d) => {
+            if (d.maintenance) {
+              logout();
+              showNotify(
+                "🛠️",
+                "Hệ thống bảo trì",
+                d.message ||
+                  "Timemark đang được nâng cấp. Vui lòng thử lại sau.",
+                [
+                  {
+                    label: "🏠 Về trang chủ",
+                    primary: true,
+                    action: () => (window.location.href = "../"),
+                  },
+                ],
+              );
+              return;
+            }
+            if (d.status !== "ok") {
+              logout();
+              showNotify(
+                "⚠️",
+                "Thông báo hệ thống",
+                d.message || "Key không hợp lệ.",
+                [
+                  {
+                    label: "🏠 Về trang chủ",
+                    primary: true,
+                    action: () => (window.location.href = "../"),
+                  },
+                  {
+                    label: "🛒 Mua key",
+                    primary: false,
+                    action: () =>
+                      window.open("https://zalo.me/", "_blank"),
+                  },
+                ],
+              );
+              return;
+            }
+            updateKeyBar(d);
+            if (localStorage.getItem("tm_notify_once") === "1") return;
+            localStorage.setItem("tm_notify_once", "1");
+            showNotify(
+              "🛡️",
+              "Thông tin bản quyền",
+              `Gói: ${d.level} (${d.type})\nCòn lại: ${d.daysLeft} ngày\nHết hạn: ${d.expireDate}\n\nCảm ơn bạn đã sử dụng Timemark!`,
+              [
+                {
+                  label: "Bắt đầu sử dụng",
+                  primary: true,
+                  action: closeNotify,
+                },
+              ],
+            );
+          })
+          .catch(() => {});
+      }
+
+      function startRealtimeCheck() {
+        if (keyWatcher) return;
+        autoCheckKey();
+        keyWatcher = setInterval(autoCheckKey, 10000);
+      }
+
+      function logout() {
+        localStorage.removeItem("tm_active");
+        localStorage.removeItem("tm_key");
+        localStorage.removeItem("tm_notify_once");
+        if (keyWatcher) {
+          clearInterval(keyWatcher);
+          keyWatcher = null;
+        }
+        updateKeyBar(null);
+        document.getElementById("lock-overlay").style.display = "flex";
+        document.getElementById("key-input").value = "";
+        document.getElementById("lock-error").style.display = "none";
+      }
+
+      document.addEventListener("keydown", (e) => {
+        const key = (e.key || "").toUpperCase();
+        if (
+          key === "F12" ||
+          (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(key)) ||
+          (e.ctrlKey && key === "U") ||
+          (e.ctrlKey && key === "S") ||
+          (e.ctrlKey && key === "P") ||
+          (e.metaKey && e.altKey && key === "I")
+        ) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      });
+      document.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        return false;
+      });
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) autoCheckKey();
+      });
+      // ===== END KEY ACTIVATION =====
+
+      // Load fonts
+      const loadFonts = async () => {
+        try {
+          const f1 = new FontFace(
+            "BigShouldersText",
+            "url(assets/BigShouldersText-Medium.ttf)",
+          );
+          const f2 = new FontFace(
+            "RobotoCondensed",
+            "url(assets/RobotoCondensed-Regular.ttf)",
+          );
+          const f3 = new FontFace("Roboto", "url(assets/Roboto-Regular.ttf)");
+          const f4 = new FontFace(
+            "RobotoMedium",
+            "url(assets/Roboto-Medium.ttf)",
+          );
+          await Promise.all([f1.load(), f2.load(), f3.load(), f4.load()]).then(
+            (fonts) => fonts.forEach((f) => document.fonts.add(f)),
+          );
+        } catch (e) {
+          console.error("Lỗi tải font:", e);
+        }
+      };
+
+      window.onload = async () => {
+        await loadFonts();
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("service-worker.js").catch(() => {});
+        }
+        const now = new Date();
+        document.getElementById("dateInput").value = now
+          .toISOString()
+          .split("T")[0];
+        document.getElementById("timeInput").value = now
+          .toTimeString()
+          .slice(0, 5);
+        document.getElementById("dayInput").value = getDayName(now.getDay());
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            async (pos) => {
+              const lat = pos.coords.latitude.toFixed(4),
+                lon = pos.coords.longitude.toFixed(4);
+              try {
+                const r = await fetch(
+                  `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=vi`,
+                );
+                const d = await r.json();
+                document.getElementById("locationInput").value =
+                  d.display_name || `${lat}, ${lon}`;
+              } catch (e) {
+                document.getElementById("locationInput").value =
+                  `${lat}, ${lon}`;
+              }
+            },
+            () => {
+              document.getElementById("locationInput").value =
+                "Hà Nội, Việt Nam";
+            },
+          );
+        }
+      };
+
+      const imageInput = document.getElementById("imageInput");
+      const previewList = document.getElementById("previewList");
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const processBtn = document.getElementById("processBtn");
+      const uploadArea = document.querySelector(".upload-area");
+      const progress = document.querySelector(".progress");
+      const progressBar = document.querySelector(".progress-bar");
+      let selectedImages = [],
+        isLandscapeList = [];
+
+      function getDayName(d) {
+        return [
+          "Chủ nhật",
+          "Thứ Hai",
+          "Thứ Ba",
+          "Thứ Tư",
+          "Thứ Năm",
+          "Thứ Sáu",
+          "Thứ Bảy",
+        ][d];
+      }
+
+      uploadArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uploadArea.classList.add("dragover");
+      });
+      uploadArea.addEventListener("dragleave", () =>
+        uploadArea.classList.remove("dragover"),
+      );
+      uploadArea.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove("dragover");
+        handleImagesSelect(Array.from(e.dataTransfer.files).slice(0, 5));
+      });
+      imageInput.addEventListener("change", (e) =>
+        handleImagesSelect(Array.from(e.target.files).slice(0, 5)),
+      );
+
+      function handleImagesSelect(files) {
+        if (!files.length) return;
+        if (files.length > 5) {
+          alert("Chỉ chọn tối đa 5 ảnh!");
+          return;
+        }
+        selectedImages = [];
+        isLandscapeList = [];
+        previewList.innerHTML = "";
+        let loaded = 0;
+        files.forEach((file, idx) => {
+          if (!file.type.startsWith("image/")) {
+            alert("Vui lòng chọn file ảnh!");
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+              selectedImages[idx] = img;
+              isLandscapeList[idx] = img.width > img.height;
+              const div = document.createElement("div");
+              div.style.margin = "10px 0";
+              div.innerHTML = `<img src="${e.target.result}" style="max-width:80px;max-height:80px;border-radius:6px;vertical-align:middle;margin-right:10px;"><span>${file.name} (${img.width}x${img.height})</span>`;
+              previewList.appendChild(div);
+              loaded++;
+              if (loaded === files.length) processBtn.disabled = false;
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      processBtn.addEventListener("click", async () => {
+        if (!selectedImages.length) {
+          alert("Vui lòng chọn ảnh!");
+          return;
+        }
+        progress.style.display = "block";
+        progressBar.style.width = "10%";
+        const dateInput = document.getElementById("dateInput").value;
+        const timeStr = document.getElementById("timeInput").value;
+        const dayStr = document.getElementById("dayInput").value;
+        const locationStr = document.getElementById("locationInput").value;
+        if (!dateInput || !timeStr || !dayStr || !locationStr) {
+          alert("Vui lòng điền đầy đủ các trường!");
+          progress.style.display = "none";
+          return;
+        }
+        document.querySelectorAll(".download-link").forEach((e) => e.remove());
+        let [h, m] = timeStr.split(":").map(Number);
+        let baseDate = new Date(dateInput);
+        baseDate.setHours(h, m, 0, 0);
+        for (let i = 0; i < selectedImages.length; i++) {
+          progressBar.style.width = `${10 + i * (80 / selectedImages.length)}%`;
+          let img = selectedImages[i],
+            isLandscape = isLandscapeList[i];
+          let thisDate = new Date(baseDate.getTime() + i * 60000);
+          let thisTimeStr = thisDate.toTimeString().slice(0, 5),
+            thisDayStr = dayStr;
+          let day = thisDate.getDate().toString().padStart(2, "0"),
+            month = (thisDate.getMonth() + 1).toString();
+          let dateStr = `${day} Tháng ${month},${thisDate.getFullYear()}`;
+          const scale = 2;
+          let targetWidth = isLandscape ? 1280 : 960,
+            targetHeight = isLandscape ? 960 : 1280;
+          canvas.width = targetWidth * scale;
+          canvas.height = targetHeight * scale;
+          canvas.style.display = "block";
+          ctx.drawImage(img, 0, 0, targetWidth * scale, targetHeight * scale);
+          if (isLandscape)
+            await applyLandscapeLayout(
+              dateStr,
+              thisTimeStr,
+              thisDayStr,
+              locationStr,
+              scale,
+            );
+          else
+            await applyPortraitLayout(
+              dateStr,
+              thisTimeStr,
+              thisDayStr,
+              locationStr,
+              scale,
+            );
+          await new Promise((resolve) => {
+            canvas.toBlob(
+              (blob) => {
+                const url = URL.createObjectURL(blob);
+                const now = new Date();
+                const fileName = `watermark_${now.getFullYear()}${(now.getMonth() + 1).toString().padStart(2, "0")}${now.getDate().toString().padStart(2, "0")}_${now.getHours().toString().padStart(2, "0")}${now.getMinutes().toString().padStart(2, "0")}${now.getSeconds().toString().padStart(2, "0")}_${i + 1}.jpg`;
+                const a = document.createElement("a");
+                a.className = "download-link btn";
+                a.download = fileName;
+                a.href = url;
+                a.textContent = `💾 Tải ảnh ${i + 1}`;
+                a.style.display = "block";
+                a.style.marginTop = "10px";
+                document.querySelector(".container").appendChild(a);
+                resolve();
+              },
+              "image/jpeg",
+              0.95,
+            );
+          });
+        }
+        progressBar.style.width = "100%";
+        progress.style.display = "none";
+        document.getElementById("downloadAllBtn").style.display = "block";
+        document.getElementById("downloadAllBtn").onclick = function () {
+          const links = document.querySelectorAll(".download-link");
+          let i = 0;
+          function go() {
+            if (i < links.length) {
+              links[i].click();
+              i++;
+              setTimeout(go, 700);
+            }
+          }
+          go();
+        };
+      });
+
+      async function applyLandscapeLayout(
+        dateStr,
+        timeStr,
+        dayStr,
+        locationStr,
+        scale,
+      ) {
+        ctx.textBaseline = "alphabetic";
+        const paddingX = 57 * scale,
+          bottomY = canvas.height - 64 * scale,
+          maxWidth = canvas.height - paddingX * 5.5;
+        const words = locationStr.split(" ");
+        let lines = [],
+          currentLine = "";
+        ctx.font = `${30 * scale}px RobotoCondensed`;
+        for (let word of words) {
+          const t = currentLine ? currentLine + " " + word : word;
+          if (ctx.measureText(t).width > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+          } else currentLine = t;
+        }
+        if (currentLine) lines.push(currentLine);
+        const lineHeight = 39 * scale * 1.2,
+          offset = (lines.length - 1) * (lineHeight + 10 * scale),
+          adjustedY = bottomY - offset;
+        const iosFix = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+          ? -8 * scale
+          : 0;
+        const topY = adjustedY - 135 * scale;
+        ctx.font = `${112 * scale}px BigShouldersText`;
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 0.8 * scale;
+        const timeX = paddingX - 30 * scale,
+          timeY = topY + 92 * scale + iosFix;
+        ctx.strokeText(timeStr, timeX, timeY);
+        ctx.fillText(timeStr, timeX, timeY);
+        const timeWidth = ctx.measureText(timeStr).width,
+          lineX = timeX + timeWidth + 14 * scale;
+        ctx.strokeStyle = "#fdc630";
+        ctx.lineWidth = 5 * scale;
+        ctx.beginPath();
+        ctx.moveTo(lineX, topY + 3 * scale);
+        ctx.lineTo(lineX, topY + 94 * scale);
+        ctx.stroke();
+        const mobileFix = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+          ? -6 * scale
+          : 0;
+        ctx.font = `${34 * scale}px RobotoCondensed`;
+        ctx.fillStyle = "white";
+        ctx.fillText(
+          dateStr,
+          lineX + 24 * scale,
+          topY + 27 * scale + mobileFix,
+        );
+        ctx.font = `${30 * scale}px Roboto`;
+        ctx.fillText(
+          dayStr,
+          lineX + 24 * scale,
+          topY +
+            90 * scale +
+            (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+              ? -5 * scale
+              : 0),
+        );
+        let locationY = topY + 160 * scale;
+        ctx.font = `${30 * scale}px RobotoCondensed`;
+        for (let line of lines) {
+          ctx.fillText(line, paddingX - 23 * scale, locationY);
+          locationY += lineHeight;
+        }
+        const wmX = canvas.width - 145 * scale,
+          wmY = canvas.height - 65 * scale;
+        ctx.font = `${28 * scale}px RobotoMedium`;
+        ctx.fillStyle = "#ffc233";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 0.1 * scale;
+        ctx.strokeText("Time", wmX, wmY);
+        ctx.fillText("Time", wmX, wmY);
+        ctx.fillStyle = "white";
+        ctx.strokeText("mark", wmX + 64 * scale, wmY);
+        ctx.fillText("mark", wmX + 64 * scale, wmY);
+        ctx.font = `${18 * scale}px Roboto`;
+        ctx.globalAlpha = 0.5;
+        ctx.lineWidth = 0.5 * scale;
+        ctx.strokeText("100% Chân thực", wmX, wmY + 35 * scale);
+        ctx.fillText("100% Chân thực", wmX, wmY + 35 * scale);
+        ctx.globalAlpha = 1;
+        await drawVerificationText(scale, true);
+      }
+
+      async function applyPortraitLayout(
+        dateStr,
+        timeStr,
+        dayStr,
+        locationStr,
+        scale,
+      ) {
+        ctx.textBaseline = "alphabetic";
+        const paddingX = 55 * scale,
+          bottomY = canvas.height - 58 * scale,
+          maxWidth = canvas.width - paddingX * 5.5;
+        const words = locationStr.split(" ");
+        let lines = [],
+          currentLine = "";
+        ctx.font = `${30 * scale}px RobotoCondensed`;
+        for (let word of words) {
+          const t = currentLine ? currentLine + " " + word : word;
+          if (ctx.measureText(t).width > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+          } else currentLine = t;
+        }
+        if (currentLine) lines.push(currentLine);
+        const lineHeight = 39 * scale * 1.2,
+          offset = (lines.length - 1) * (lineHeight + 10 * scale),
+          adjustedY = bottomY - offset;
+        const iosFix = /iPhone|iPad|iPod/i.test(navigator.userAgent)
+          ? -8 * scale
+          : 0;
+        const topY = adjustedY - 135 * scale;
+        ctx.font = `${112 * scale}px BigShouldersText`;
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 0.8 * scale;
+        const timeX = paddingX - 30 * scale,
+          timeY = topY + 92 * scale + iosFix;
+        ctx.strokeText(timeStr, timeX, timeY);
+        ctx.fillText(timeStr, timeX, timeY);
+        const timeWidth = ctx.measureText(timeStr).width,
+          lineX = timeX + timeWidth + 14 * scale;
+        ctx.strokeStyle = "#fdc630";
+        ctx.lineWidth = 5 * scale;
+        ctx.beginPath();
+        ctx.moveTo(lineX, topY + 3 * scale);
+        ctx.lineTo(lineX, topY + 94 * scale);
+        ctx.stroke();
+        const mobileFix = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+          ? -6 * scale
+          : 0;
+        ctx.font = `${34 * scale}px RobotoCondensed`;
+        ctx.fillStyle = "white";
+        ctx.fillText(
+          dateStr,
+          lineX + 24 * scale,
+          topY + 27 * scale + mobileFix,
+        );
+        ctx.font = `${30 * scale}px Roboto`;
+        ctx.fillText(
+          dayStr,
+          lineX + 24 * scale,
+          topY +
+            90 * scale +
+            (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+              ? -5 * scale
+              : 0),
+        );
+        let locationY = topY + 158 * scale;
+        ctx.font = `${30 * scale}px RobotoCondensed`;
+        for (let line of lines) {
+          ctx.fillText(line, paddingX - 23 * scale, locationY);
+          locationY += lineHeight;
+        }
+        const wmX = canvas.width - 145 * scale,
+          wmY = canvas.height - 65 * scale;
+        ctx.font = `${28 * scale}px RobotoMedium`;
+        ctx.fillStyle = "#ffc233";
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 0.1 * scale;
+        ctx.strokeText("Time", wmX, wmY);
+        ctx.fillText("Time", wmX, wmY);
+        ctx.fillStyle = "white";
+        ctx.strokeText("mark", wmX + 64 * scale, wmY);
+        ctx.fillText("mark", wmX + 64 * scale, wmY);
+        ctx.font = `${18 * scale}px Roboto`;
+        ctx.globalAlpha = 0.8;
+        ctx.lineWidth = 0.5 * scale;
+        ctx.strokeText("100% Chân thực", wmX, wmY + 35 * scale);
+        ctx.fillText("100% Chân thực", wmX, wmY + 35 * scale);
+        ctx.globalAlpha = 1;
+        await drawVerificationText(scale, false);
+      }
+
+      async function drawVerificationText(scale, isLandscape) {
+        const randomCode = Array(14)
+          .fill()
+          .map(() =>
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".charAt(
+              Math.floor(Math.random() * 36),
+            ),
+          )
+          .join("");
+        const verifiedText = ` ${randomCode}  Timemark Verified`;
+        const checkmark = new Image();
+        checkmark.crossOrigin = "anonymous";
+        checkmark.src = "assets/checkmark.png";
+        await new Promise((res, rej) => {
+          checkmark.onload = res;
+          checkmark.onerror = () => rej("Không thể tải checkmark.png");
+        });
+        ctx.font = `${21 * scale}px RobotoCondensed`;
+        const textWidth = ctx.measureText(verifiedText).width,
+          textHeight = 21 * scale;
+        const cw = 21 * scale,
+          ch = 21 * scale,
+          totalW = cw + textWidth + 10 * scale,
+          totalH = Math.max(ch, textHeight);
+        const tmp = document.createElement("canvas");
+        tmp.width = totalW;
+        tmp.height = totalH;
+        const tc = tmp.getContext("2d");
+        tc.clearRect(0, 0, totalW, totalH);
+        tc.drawImage(
+          checkmark,
+          isLandscape ? 17 : 13 * scale,
+          (totalH - ch) / 2 + (isLandscape ? 3 : 2 * scale),
+          cw,
+          ch,
+        );
+        tc.font = `${21 * scale}px RobotoCondensed`;
+        tc.strokeStyle = "black";
+        tc.lineWidth = 0.5 * scale;
+        tc.strokeText(verifiedText, cw + 10 * scale, textHeight - 1 * scale);
+        tc.fillStyle = "white";
+        tc.fillText(verifiedText, cw + 10 * scale, textHeight - 1 * scale);
+        ctx.save();
+        if (isLandscape)
+          ctx.translate(
+            canvas.width - totalH - 10 * scale,
+            canvas.height - totalW + 15 * scale,
+          );
+        else
+          ctx.translate(
+            canvas.width - totalH - 10 * scale,
+            canvas.height - totalW - 120 * scale,
+          );
+        ctx.rotate(-Math.PI / 2);
+        ctx.drawImage(tmp, 0, 0);
+        ctx.restore();
+      }
+    </script>
+  </body>
+</html>
