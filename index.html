@@ -274,7 +274,8 @@
       }
       input[type="text"],
       input[type="time"],
-      input[type="date"] {
+      input[type="date"],
+      textarea {
         width: 100%;
         padding: 13px 14px;
         background: rgba(255,255,255,0.50);
@@ -288,6 +289,10 @@
         transition: all 0.22s ease;
         box-shadow: 0 2px 8px rgba(100,80,180,0.07), 0 1px 0 rgba(255,255,255,0.90) inset;
         -webkit-appearance: none;
+      }
+      textarea {
+        resize: vertical;
+        min-height: 56px;
       }
       input[type="text"]::placeholder,
       input[type="time"]::placeholder,
@@ -883,11 +888,11 @@
       </div>
       <div class="form-group">
         <label for="locationInput">📍 Vị trí:</label
-        ><input
-          type="text"
+        ><textarea
           id="locationInput"
+          rows="2"
           placeholder="VD: Hà Nội, Việt Nam"
-        />
+        ></textarea>
       </div>
       <div class="progress"><div class="progress-bar"></div></div>
       <button class="btn" id="processBtn" disabled>Tạo Watermark</button>
@@ -1450,23 +1455,34 @@
       ) {
         const paddingX = 27 * scale,
           bottomY = canvas.height - 64 * scale,
-          maxWidth = canvas.height - paddingX * 5.5;
+          maxWidth = canvas.width - paddingX * 5.5;
 
-        // wrap location text
-        const words = locationStr.split(" ");
-        let lines = [], currentLine = "";
+        // wrap location text — respect explicit newlines
+        const paragraphs = locationStr.split(/\r?\n/);
+        let lines = [];
         ctx.font = `500 ${44 * scale}px RobotoCondensed`;
-        for (let word of words) {
-          const t = currentLine ? currentLine + " " + word : word;
-          if (ctx.measureText(t).width > maxWidth && currentLine) {
-            lines.push(currentLine);
-            currentLine = word;
-          } else currentLine = t;
+        for (let pIndex = 0; pIndex < paragraphs.length; pIndex++) {
+          const paragraph = paragraphs[pIndex].trim();
+          if (!paragraph) {
+            // preserve blank line
+            lines.push("");
+            continue;
+          }
+          const words = paragraph.split(/\s+/);
+          let currentLine = "";
+          for (let word of words) {
+            const t = currentLine ? currentLine + " " + word : word;
+            if (ctx.measureText(t).width > maxWidth && currentLine) {
+              lines.push(currentLine);
+              currentLine = word;
+            } else currentLine = t;
+          }
+          if (currentLine) lines.push(currentLine);
+          if (pIndex < paragraphs.length - 1) lines.push(""); // paragraph break
         }
-        if (currentLine) lines.push(currentLine);
 
-        const lineHeight = 20 * scale * 1.2,
-          offset = (lines.length - 1) * (lineHeight + 4 * scale),
+        const lineHeight = 44 * scale * 0.6,
+          offset = (lines.length - 1) * (lineHeight + 2 * scale),
           adjustedY = bottomY - offset;
 
         // clockCenterY: trục giữa của block giờ, neo tất cả elements vào đây
@@ -1552,21 +1568,31 @@
           bottomY = canvas.height - 58 * scale,
           maxWidth = canvas.width - paddingX * 5.5;
 
-        // wrap location text
-        const words = locationStr.split(" ");
-        let lines = [], currentLine = "";
-        ctx.font = `500 ${34 * scale}px RobotoCondensed`;
-        for (let word of words) {
-          const t = currentLine ? currentLine + " " + word : word;
-          if (ctx.measureText(t).width > maxWidth && currentLine) {
-            lines.push(currentLine);
-            currentLine = word;
-          } else currentLine = t;
+        // wrap location text — respect explicit newlines
+        const paragraphs = locationStr.split(/\r?\n/);
+        let lines = [];
+        ctx.font = `500 ${44 * scale}px RobotoCondensed`;
+        for (let pIndex = 0; pIndex < paragraphs.length; pIndex++) {
+          const paragraph = paragraphs[pIndex].trim();
+          if (!paragraph) {
+            lines.push("");
+            continue;
+          }
+          const words = paragraph.split(/\s+/);
+          let currentLine = "";
+          for (let word of words) {
+            const t = currentLine ? currentLine + " " + word : word;
+            if (ctx.measureText(t).width > maxWidth && currentLine) {
+              lines.push(currentLine);
+              currentLine = word;
+            } else currentLine = t;
+          }
+          if (currentLine) lines.push(currentLine);
+          if (pIndex < paragraphs.length - 1) lines.push("");
         }
-        if (currentLine) lines.push(currentLine);
 
-        const lineHeight = 20 * scale * 1.2,
-          offset = (lines.length - 1) * (lineHeight + 4 * scale),
+        const lineHeight = 44 * scale * 1.0,
+          offset = (lines.length - 1) * (lineHeight + 2 * scale),
           adjustedY = bottomY - offset;
 
         // clockCenterY: trục giữa của block giờ
